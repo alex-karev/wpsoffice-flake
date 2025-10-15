@@ -41,7 +41,7 @@ Add this flake to your system configuration:
       ];
       # (Optionally) install fonts
       fonts.packages = [
-        wpsoffice-flake.packages.wpsoffice-fonts.default
+        wpsoffice-flake.packages.fonts.default
       ];
     };
   };
