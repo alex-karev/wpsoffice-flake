@@ -6,7 +6,7 @@ A custom NixOS flake that provides a sandboxed offline WPS Office installation w
 
 - **Sandboxed Execution**: Uses `bubblewrap` (bwrap) to run WPS Office in a restricted environment
 - **Network Control**: Netword access is disabled by default
-- **UI Scaling**: Support for QT scaling factor for HDPI
+- **UI Scaling**: Support for QT scaling factor for HiDPI displays
 - **Icon Fixes**: Automatic fixes for WPS Office 2023 icons to work with most icon themes
 - **Additional Fonts**: Includes fonts package with necessary symbol fonts for math formula display
 - **Customizable**: Flexible package options and configurations
