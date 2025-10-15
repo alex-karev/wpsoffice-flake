@@ -20,7 +20,9 @@
         wpsoffice-sandboxed = pkgs.callPackage ./package.nix {};
         default = self.packages."${system}".wpsoffice-sandboxed;
       };
-      wpsoffice-fonts = import ./fonts.nix {inherit pkgs;};
+      wpsoffice-fonts = {
+        default = import ./fonts.nix {inherit pkgs;};
+      };
     };
   };
 }
