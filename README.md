@@ -4,30 +4,33 @@ A custom NixOS flake that provides a sandboxed offline WPS Office installation w
 
 ## Features
 
-- **Sandboxed Execution**: Uses `bubblewrap` (bwrap) to run WPS Office in a restricted environment
-- **Network Control**: Netword access is disabled by default
-- **UI Scaling**: Support for QT scaling factor for HiDPI displays
-- **Icon Fixes**: Automatic fixes for WPS Office 2023 icons to work with most icon themes
-- **Additional Fonts**: Includes fonts package with necessary symbol fonts for math formula display
-- **Customizable**: Flexible package options and configurations
+* **Sandboxed Execution**: Runs WPS Office in a restricted environment using `bubblewrap` (bwrap)
+* **Network Control**: Network access is disabled by default
+* **UI Scaling**: Supports the `QT_SCALE_FACTOR` variable for HiDPI displays
+* **Icon Fixes**: Automatically fixes WPS Office 2023 icons to work with most icon themes
+* **Additional Fonts**: Includes a fonts package with the necessary symbol fonts for displaying math formulas
+* **Customizable**: Flexible package options and configuration settings
 
 ## Packages
 
-- `wpsoffice-sanboxed` - sandboxed version of WPS Office
-- `wpsoffice-fonts` - fonts for WPS Office from [this](https://github.com/ferion11/ttf-wps-fonts) repo
+* `wpsoffice` — sandboxed version of WPS Office
+* `fonts` — fonts for WPS Office from [this repository](https://github.com/ferion11/ttf-wps-fonts)
 
 ## Configuration Options
 
-- `allowNetwork` (default: `false`): Enable/disable network access
-- `scale` (default: `null`): Set `QT_SCALE_FACTOR` for UI scaling. Should be a string
-- `fixIcons` (default: `true`): Fix `.desktop` icons by replacing 2023 with 2019
-- `package` (default: `pkgs.wpsoffice-cn`): Customize the base WPS Office package
+| Option           | Default             | Description                                                                |
+| ---------------- | ------------------- | -------------------------------------------------------------------------- |
+| `allowNetwork`   | `false`             | Enable or disable network access inside the sandbox                        |
+| `scale`          | `null`              | Set `QT_SCALE_FACTOR` for UI scaling (string)                              |
+| `fixIcons`       | `true`              | Replace `2023` with `2019` in `.desktop` files to fix icons                |
+| `package`        | `pkgs.wpsoffice-cn` | Base WPS Office package (unfree)                                           |
+| `extraBwrapArgs` | `[]`                | List of extra arguments to pass to `bubblewrap` for advanced customization |
 
 ## Usage
 
 ### As a Flake Input
 
-Add this flake to your system configuration:
+Add this flake to your NixOS configuration:
 
 ```nix
 {
@@ -41,35 +44,55 @@ Add this flake to your system configuration:
       ];
       # (Optionally) install fonts
       fonts.packages = [
-        wpsoffice-flake.packages.fonts.default
+        wpsoffice-flake.packages.x86_64-linux.fonts
       ];
     };
   };
 }
 ```
 
-To customize the package, use override attribute:
+### Customize
+
+To customize the package, use the `override` attribute:
 
 ```nix
 environment.systemPackages = [
   (wpsoffice-flake.packages.x86_64-linux.default.override {
     scale = "2";
     allowNetwork = true;
+    extraBwrapArgs = [
+      "--ro-bind /usr/share/icons /usr/share/icons"
+    ];
   })
 ];
 ```
 
+### Run with `nix run`
+
+You can also run WPS Office directly from the flake without installing it:
+
+```bash
+nix run github:alex-karev/wpsoffice-flake#wpsoffice-sandboxed
+```
+
+or, if you’re in the cloned flake directory:
+
+```bash
+nix run .#wpsoffice
+```
+
 ## Dependencies
 
-- `bubblewrap`: For application sandboxing
-- `wpsoffice-cn`: Base WPS Office package (unfree)
-- Various system libraries and dependencies
+* `bubblewrap` — for application sandboxing
+* `wpsoffice-cn` — base WPS Office package (unfree)
+* Various system libraries and runtime dependencies
 
 ## License
 
-This flake provides packages that may contain unfree software. Please ensure you comply with the respective licenses of WPS Office and the included fonts.
+This flake provides packages that may include unfree software.
+Please ensure you comply with the respective licenses of WPS Office and the included fonts.
 
-## Source
+## Sources
 
-- WPS Office: [Official WPS Office](https://www.wps.com/)
-- Fonts: [ferion11/ttf-wps-fonts](https://github.com/ferion11/ttf-wps-fonts)
+* WPS Office: [Official Website](https://www.wps.com/)
+* Fonts: [ferion11/ttf-wps-fonts](https://github.com/ferion11/ttf-wps-fonts)

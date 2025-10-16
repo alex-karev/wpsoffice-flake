@@ -9,20 +9,30 @@
     self,
     nixpkgs,
   }: let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
+    # Define supported systems
+    supportedSystems = ["x86_64-linux"];
+
+    # Generate packages for one system
+    pkgsForSystem = system: let
+      pkgs = import nixpkgs {
+        config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) ["wpsoffice-cn"];
+        inherit system;
+      };
+    in {
+      wpsoffice = pkgs.callPackage ./package.nix {};
+      fonts = import ./fonts.nix {inherit pkgs;};
+      default = self.packages."${system}".wpsoffice;
     };
   in {
-    packages = {
-      "${system}" = {
-        wpsoffice-sandboxed = pkgs.callPackage ./package.nix {};
-        default = self.packages."${system}".wpsoffice-sandboxed;
+    # Generate packages for all systems
+    packages = nixpkgs.lib.genAttrs supportedSystems (system: pkgsForSystem system);
+
+    # Generate apps for all systems
+    apps = nixpkgs.lib.genAttrs supportedSystems (system: {
+      wpsoffice = {
+        type = "app";
+        program = "${self.packages.${system}.default}/bin/wps";
       };
-      fonts = {
-        default = import ./fonts.nix {inherit pkgs;};
-      };
-    };
+    });
   };
 }
