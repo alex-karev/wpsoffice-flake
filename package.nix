@@ -16,7 +16,6 @@
       "--dev /dev"
       "--proc /proc"
       "--tmpfs /tmp"
-      "--die-with-parent"
       "--new-session"
       "--ro-bind /nix/store /nix/store"
       "--ro-bind /etc /etc"
@@ -24,6 +23,7 @@
       "--ro-bind /tmp/.X11-unix /tmp/.X11-unix"
       "--bind ~ ~"
       "--setenv PATH /bin"
+      "--bind /run/user/\$(id -u)/bus /run/user/\$(id -u)/bus"
       (pkgs.lib.optionalString allowNetwork "--share-net")
       (pkgs.lib.optionalString (scale != null) "--setenv QT_SCALE_FACTOR ${scale}")
     ]
