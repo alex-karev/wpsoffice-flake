@@ -5,6 +5,7 @@
   fixIcons ? true, # Fix icons by replacing 2023 with 2019
   package ? pkgs.wpsoffice-cn, # Customize wpsoffice package
   extraBwrapArgs ? [], # Extra arguments for bwrap
+  killWpsCloudSvr ? true, # Kill wpscloudsvr which executes in background even when wps is closed
 }: let
   # Define bwrap package
   bwrapPackage = pkgs.bubblewrap;
@@ -32,7 +33,8 @@
   # Define bwrap command
   mkBwrapCommand = exec: ''
     #!${pkgs.bash}/bin/bash
-    exec ${bwrapPackage}/bin/bwrap ${pkgs.lib.concatStringsSep " " bwrapArgs} ${package}/bin/${exec} \"\$@\"
+    ${bwrapPackage}/bin/bwrap ${pkgs.lib.concatStringsSep " " bwrapArgs} ${package}/bin/${exec} \"\$@\"
+    ${pkgs.lib.optionalString killWpsCloudSvr "pkill wpscloudsvr"}
   '';
 in
   pkgs.stdenv.mkDerivation rec {
