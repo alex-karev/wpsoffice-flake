@@ -34,7 +34,7 @@
   mkBwrapCommand = exec: ''
     #!${pkgs.bash}/bin/bash
     ${bwrapPackage}/bin/bwrap ${pkgs.lib.concatStringsSep " " bwrapArgs} ${package}/bin/${exec} \"\$@\"
-    ${pkgs.lib.optionalString killWpsCloudSvr "pkill wpscloudsvr"}
+    ${pkgs.lib.optionalString killWpsCloudSvr "${pkgs.procps}/bin/pkill wpscloudsvr"}
   '';
 in
   pkgs.stdenv.mkDerivation rec {

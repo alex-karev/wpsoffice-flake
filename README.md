@@ -25,6 +25,7 @@ A custom NixOS flake that provides a sandboxed offline WPS Office installation w
 | `fixIcons`       | `true`              | Replace `2023` with `2019` in `.desktop` files to fix icons                |
 | `package`        | `pkgs.wpsoffice-cn` | Base WPS Office package (unfree)                                           |
 | `extraBwrapArgs` | `[]`                | List of extra arguments to pass to `bubblewrap` for advanced customization |
+| `killWpsCloudSvr` | `true`                | Kill `wpscloudsvr` process after exit |
 
 ## Usage
 
